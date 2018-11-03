@@ -16,12 +16,15 @@
 
 package org.fs.widget.hideable
 
-import android.view.animation.Interpolator
+import android.animation.IntEvaluator
+import android.view.View
 
-class FastInterpolator: Interpolator {
+class WidthEvaluator(private val view: View): IntEvaluator() {
 
-  override fun getInterpolation(input: Float): Float {
-    val t = input - 1.0f
-    return t * t * t * t * t
+  override fun evaluate(fraction: Float, startValue: Int?, endValue: Int?): Int {
+    val f = super.evaluate(fraction, startValue, endValue)
+    view.layoutParams.width = f
+    view.requestLayout()
+    return f
   }
 }

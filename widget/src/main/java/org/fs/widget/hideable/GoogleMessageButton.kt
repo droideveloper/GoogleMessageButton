@@ -16,6 +16,7 @@
 
 package org.fs.widget.hideable
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.res.ResourcesCompat
@@ -34,11 +35,15 @@ class GoogleMessageButton @JvmOverloads constructor(
 
   private companion object {
     const val DURATION = 300L
-    val INTERPOLATOR = FastInterpolator()
-    val WIDTH_PROPERTY = WidthProperty()
+    const val STATE_IDLE = 0
+    const val STATE_UP = 1
+    const val STATE_DOWN = 2
   }
 
   private var textWidth: Int = 0
+  private val widthEvaluator by lazy { WidthEvaluator(viewTextButton) }
+
+  private var state = STATE_IDLE
 
   init {
     View.inflate(context, R.layout.view_layout_button, this)
@@ -76,6 +81,8 @@ class GoogleMessageButton @JvmOverloads constructor(
   override fun onLayoutChange(v: View?, l: Int, t: Int, r: Int, b: Int, ol: Int, ot: Int, or: Int, ob: Int) {
     // try to get with
     textWidth = viewTextButton.width
+    // remove this from layout
+    removeOnLayoutChangeListener(this)
   }
 
   override fun onAttachedToWindow() {
@@ -84,16 +91,44 @@ class GoogleMessageButton @JvmOverloads constructor(
   }
 
   fun translate(dy: Int) = when {
-    dy < 0 -> animateScrollUp()
-    dy > 0 -> animateScrollDown()
+    dy < 0 -> animateScrollDown()
+    dy > 0 -> animateScrollUp()
     else -> Unit
   }
 
   private fun animateScrollUp() {
-    viewTextButton.visibility = View.VISIBLE
+    if (state != STATE_UP) {
+      clearAnimation()
+      val from = if (viewTextButton.layoutParams.width != 0) textWidth else viewTextButton.layoutParams.width
+      createAnimation(from, 0).start()
+      state = STATE_UP
+    }
   }
 
   private fun animateScrollDown() {
-    viewTextButton.visibility = View.GONE
+    if (state != STATE_DOWN) {
+      clearAnimation()
+      createAnimation(viewTextButton.layoutParams.width, textWidth).start()
+      state = STATE_DOWN
+    }
+  }
+
+  private fun createAnimation(from: Int, to: Int): ValueAnimator = ValueAnimator.ofObject(widthEvaluator, from, to).apply {
+    duration = DURATION
+    val listener = if (from > to) {
+      AnimatorListener(start = {
+        viewTextButton.alpha = 0f
+      }, end = {
+        viewTextButton.visibility = View.GONE
+      })
+    } else {
+      AnimatorListener(start = {
+        viewTextButton.visibility = View.VISIBLE
+        viewTextButton.alpha = 0f
+      }, end = {
+        viewTextButton.alpha = 1f
+      })
+    }
+    addListener(listener)
   }
 }
