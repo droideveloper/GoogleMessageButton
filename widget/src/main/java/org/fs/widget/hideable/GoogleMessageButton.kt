@@ -117,16 +117,16 @@ class GoogleMessageButton @JvmOverloads constructor(
     duration = DURATION
     val listener = if (from > to) {
       AnimatorListener(start = {
-        viewTextButton.alpha = 0f
+        // viewTextButton.alpha = 0f
       }, end = {
         viewTextButton.visibility = View.GONE
       })
     } else {
       AnimatorListener(start = {
         viewTextButton.visibility = View.VISIBLE
-        viewTextButton.alpha = 0f
+        // viewTextButton.alpha = 0f
       }, end = {
-        viewTextButton.alpha = 1f
+        // viewTextButton.alpha = 1f
       })
     }
     addListener(listener)
