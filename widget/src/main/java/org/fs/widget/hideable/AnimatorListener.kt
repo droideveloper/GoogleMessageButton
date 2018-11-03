@@ -16,20 +16,16 @@
 
 package org.fs.widget.hideable
 
-import android.util.Property
-import android.widget.TextView
+import android.animation.Animator
 
-class WidthProperty: Property<TextView, Int>(Int::class.java, "width") {
+class AnimatorListener(
+    private val start: (() -> Unit)? = null,
+    private val cancel: (() -> Unit)? = null,
+    private val end: (() -> Unit)? = null,
+    private val repeat: (() -> Unit)? = null): Animator.AnimatorListener {
 
-  override fun get(view: TextView?): Int {
-    view?.let { v ->
-      return v.layoutParams.width
-    }
-    return 0
-  }
-
-  override fun set(view: TextView?, value: Int?) {
-    view?.layoutParams?.width = value ?: 0
-    view?.requestLayout()
-  }
+  override fun onAnimationRepeat(animation: Animator?) = repeat?.invoke() ?: Unit
+  override fun onAnimationEnd(animation: Animator?) = end?.invoke() ?: Unit
+  override fun onAnimationCancel(animation: Animator?) = cancel?.invoke() ?: Unit
+  override fun onAnimationStart(animation: Animator?) = start?.invoke() ?: Unit
 }
