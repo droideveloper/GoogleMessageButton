@@ -8,7 +8,7 @@ android {
     minSdkVersion 21
     targetSdkVersion 28
     versionCode 1
-    versionName "1.0"
+    versionName "0.0.1"
   }
 
   lintOptions {
@@ -37,3 +37,11 @@ dependencies {
 
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$KOTLIN_VERSION"
 }
+
+ext {
+  PUBLISH_GROUP_ID = 'org.fs.widet'
+  PUBLISH_ARTIFACT_ID = 'google_message_button'
+  PUBLISH_VERSION = '0.0.1'
+}
+
+apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
