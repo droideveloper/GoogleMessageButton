@@ -36,7 +36,7 @@
     android:layout_gravity="center_vertical"
     android:textSize="@dimen/button_text_size"
     android:singleLine="true"
-    android:ellipsize="marquee"
+    android:ellipsize="none"
     tools:text="@string/app_name"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" />
